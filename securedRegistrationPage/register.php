@@ -1,8 +1,9 @@
 <?php
+require "../../config.php";
 // Change this to your connection info.
 $DATABASE_HOST = 'localhost';
 $DATABASE_USER = 'root';
-$DATABASE_PASS = 'BlackGoofy,./';
+$DATABASE_PASS = PASSWORD;
 $DATABASE_NAME = 'securedLoginPage';
 // Try and connect using the info above.
 $con = mysqli_connect($DATABASE_HOST, $DATABASE_USER, $DATABASE_PASS, $DATABASE_NAME);
@@ -41,7 +42,7 @@ if ($stmt = $con->prepare('SELECT id, password FROM accounts WHERE username = ?'
         echo 'Username exists, please choose another!';
     } else {
         // Username doesnt exists, insert new account
-        if ($stmt = $con->prepare('INSERT INTO accounts (username, password, email, activation_code) VALUES (?, ?, ?, ?)')) {            // We do not want to expose passwords in our database, so hash the password and use password_verify when a user logs in.
+        if ($stmt = $con->prepare('INSERT INTO accounts (username, password, email, activation_code) VALUES (?, ?, ?, ?)')) {
             $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
             $uniqid = uniqid();
             $stmt->bind_param('ssss', $_POST['username'], $password, $_POST['email'], $uniqid);
